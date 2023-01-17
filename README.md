@@ -1,4 +1,4 @@
-# ArchiLib（程序基础框架）
+# ArchiLib（自建库）
 如何使用：  
 1.Unity打开Package Manger窗口  
 2.左上角选择add package from git url  
