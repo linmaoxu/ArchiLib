@@ -2,23 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// ÎÞÐè¹ÒÔÚÓÎÏ·ÎïÌåÉÏµÄµ¥Àý»ùÀà
-/// </summary>
-/// <typeparam name="T">Êý¾ÝÀàÐÍ</typeparam>
-public class Singleton<T> where T:new ()
+
+namespace AppArchi.Base
 {
-    private static T instance;
-    public static T _instance
+    /// <summary>
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// </summary>
+    /// <typeparam name="T">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</typeparam>
+    public class Singleton<T> where T : new()
     {
-        get
+        private static T instance;
+        public static T _instance
         {
-            if (instance==null)
+            get
             {
-                instance = new T();
+                if (instance == null)
+                {
+                    instance = new T();
+                }
+                return instance;
             }
-            return instance;
         }
+
     }
 
 }

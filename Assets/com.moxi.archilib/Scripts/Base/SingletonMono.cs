@@ -2,23 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// ¹ÒÔØÔÚÓÎÏ·ÎïÌåÉÏµÄµ¥Àı»ùÀà
-/// </summary>
-/// <typeparam name="T">Êı¾İÀàĞÍ</typeparam>
-public class SingletonMono<T>: MonoBehaviour where T:MonoBehaviour
+
+namespace AppArchi.Base
 {
-    private static T instance;
-    public static T _instance
+    /// <summary>
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// </summary>
+    /// <typeparam name="T">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</typeparam>
+    public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     {
-        get 
+        private static T instance;
+        public static T _instance
         {
-            return instance;
+            get
+            {
+                return instance;
+            }
+        }
+
+        public virtual void Awake()
+        {
+            instance = this as T;
         }
     }
 
-    public virtual void Awake()
-    {
-        instance = this as T;
-    }
 }

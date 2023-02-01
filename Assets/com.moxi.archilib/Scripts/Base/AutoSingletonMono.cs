@@ -1,26 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// ÎÞÐè¹ÒÔØÔÚÓÎÏ·ÎïÌåÉÏµÄµ¥Àý»ùÀà
-/// ÊÊÓÃÓÚ¹ÜÀíÄ£¿é
-/// </summary>
-/// <typeparam name="T">ÀàÐÍ</typeparam>
-public class AutoSingletonMono<T> : MonoBehaviour where T:MonoBehaviour
+namespace AppArchi.Base
 {
-    private static T instance;
-    public static T _instance
+    /// <summary>
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½Ú¹ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
+    /// </summary>
+    /// <typeparam name="T">ï¿½ï¿½ï¿½ï¿½</typeparam>
+    public class AutoSingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     {
-        get
+        private static T instance;
+        public static T _instance
         {
-            if (instance==null)
+            get
             {
-                GameObject go = new GameObject(typeof(T).ToString());
-                instance = go.AddComponent<T>();
-                DontDestroyOnLoad(go);
+                if (instance == null)
+                {
+                    GameObject go = new GameObject(typeof(T).ToString());
+                    instance = go.AddComponent<T>();
+                    DontDestroyOnLoad(go);
+                }
+                return instance;
             }
-            return instance;
         }
     }
+
 }
