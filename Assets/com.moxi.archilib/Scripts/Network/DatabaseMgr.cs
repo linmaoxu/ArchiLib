@@ -1,6 +1,5 @@
 using System.Data;
 using UnityEngine;
-using AppArchi.Base;
 using MySql.Data.MySqlClient;
 
 namespace AppArchi.Networking

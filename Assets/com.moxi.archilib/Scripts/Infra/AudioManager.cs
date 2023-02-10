@@ -1,188 +1,130 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using AppArchi.Base;
 
 namespace AppArchi.Infra
 {
-    public class AudioManager : AutoSingletonMono<AudioManager>
+    public class AudioManager
     {
-        GameObject soundGO; //��Ч���ص���Ϸ���壨������Ч��
-        AudioSource soundAS;    //��Ч��Դ
-        GameObject bgGO;    //������Ч���ص���Ϸ����(���ű�������)
-        AudioSource bgAS;    //��Ч��Դ
-        Coroutine waitForPlay;  //�ȴ�����Э��
-        public void Awake()
+        public enum PlayType
         {
-            Initial();
+            Sound,
+            BgMusic,
+            All
         }
+        GameObject parentGO;
+        GameObject soundGO;
+        AudioSource soundAS;
+        GameObject bgGO;
+        AudioSource bgAS;
+        Coroutine waitForPlay;
+        float volumn;
 
-        /// <summary>
-        /// ��ʼ��������Ϸ���弰�������
-        /// </summary>
-        public void Initial()
+        public void Init()
         {
+            if (parentGO == null)
+            {
+                parentGO = new GameObject(nameof(AudioManager));
+            }
+
             if (soundGO == null)
             {
                 soundGO = new GameObject("soundGO");
-                soundGO.transform.SetParent(this.transform);
+                soundGO.transform.SetParent(parentGO.transform);
                 soundAS = soundGO.AddComponent<AudioSource>();
             }
 
             if (bgGO == null)
             {
                 bgGO = new GameObject("bgGO");
-                bgGO.transform.SetParent(this.transform);
+                bgGO.transform.SetParent(parentGO.transform);
                 bgAS = bgGO.AddComponent<AudioSource>();
                 bgAS.loop = true;
             }
         }
 
-        /// <summary>
-        /// ������Ч
-        /// </summary>
-        /// <param name="audioName">��Ч����</param>
-        public void PlaySound(string audioName)
+        public void Play(AudioClip audioClip, PlayType playType)
         {
-            //��Ч��Ϸ�����ж�
-            if (soundGO == null)
+            switch (playType)
             {
-                Initial();
+                case PlayType.Sound:
+                    soundAS.clip = audioClip;
+                    soundAS.Play();
+                    break;
+                case PlayType.BgMusic:
+                    bgAS.clip = audioClip;
+                    bgAS.Play();
+                    break;
+                default:
+                    break;
             }
-            soundAS.clip = ResManager._instance.LoadRes<AudioClip>(audioName);
-            soundAS.Play();
+
         }
 
-        /// <summary>
-        /// ������Ч(��ϲ���/�ȴ�����)
-        /// </summary>
-        /// <param name="audioName">��Ч����</param>
-        /// <param name="isWait">�Ƿ���/�ȴ�</param>
-        public void PlaySound(string audioName, bool isWait)
+        public void Pause(PlayType playType)
         {
-            //��Ч��Ϸ�����ж�
-            if (soundGO == null)
+            switch (playType)
             {
-                Initial();
-            }
-            AudioClip ac = ResManager._instance.LoadRes<AudioClip>(audioName);
-            if (isWait)
-            {
-                waitForPlay = MonoManager._instance.StartCoroutine(WaitForPlaying(soundAS, ac));
-            }
-            else
-            {
-                soundAS.Stop();
-                soundAS.clip = ac;
-                soundAS.Play();
+                case PlayType.Sound:
+                    soundAS.Pause();
+                    break;
+                case PlayType.BgMusic:
+                    bgAS.Pause();
+                    break;
+                case PlayType.All:
+                    soundAS.Pause();
+                    bgAS.Pause();
+                    break;
+                default:
+                    break;
             }
         }
 
-        /// <summary>
-        /// ���ű�������
-        /// </summary>
-        /// <param name="bgName">����������</param>
-        public void PlayBG(string bgName)
+        public void Stop(PlayType playType)
         {
-            //��Ч��Ϸ�����ж�
-            if (bgGO == null)
+            switch (playType)
             {
-                Initial();
-            }
-            bgAS.clip = ResManager._instance.LoadRes<AudioClip>(bgName);
-            bgAS.Play();
-        }
-
-        /// <summary>
-        /// ���ű�������
-        /// </summary>
-        /// <param name="bgName">����������</param>
-        public void PlayBG(string bgName, float volume)
-        {
-            //��Ч��Ϸ�����ж�
-            if (bgGO == null)
-            {
-                Initial();
-            }
-            bgAS.clip = ResManager._instance.LoadRes<AudioClip>(bgName);
-            bgAS.volume = volume;
-            bgAS.Play();
-        }
-
-
-        /// <summary>
-        /// ��Ч�Ƿ����ڲ���
-        /// </summary>
-        /// <returns></returns>
-        public bool IsSoundPlaying()
-        {
-            if (soundAS == null)
-            {
-                Initial();
-            }
-            return isPlayOver(soundAS);
-        }
-
-        /// <summary>
-        /// �����Ƿ��ڲ���
-        /// </summary>
-        /// <returns></returns>
-        public bool IsBgPlaying()
-        {
-            if (bgAS == null)
-            {
-                Initial();
-            }
-            return isPlayOver(bgAS);
-        }
-
-        /// <summary>
-        /// ֹͣ���ű������ֺ���Ч
-        /// </summary>
-        public void StopPlayAll()
-        {
-            if (soundAS == null)
-            {
-                Initial();
-            }
-            if (bgAS == null)
-            {
-                Initial();
-            }
-            soundAS.Stop();
-            bgAS.Stop();
-        }
-
-        //ֹͣ������Ч
-        public void StopPlaySound()
-        {
-            if (soundAS != null)
-            {
-                soundAS.Stop();
+                case PlayType.Sound:
+                    soundAS.Stop();
+                    break;
+                case PlayType.BgMusic:
+                    bgAS.Stop();
+                    break;
+                case PlayType.All:
+                    soundAS.Stop();
+                    bgAS.Stop();
+                    break;
+                default:
+                    break;
             }
         }
 
-        //ֹͣ���ű�������
-        public void StopPlayBg()
+        public void SetVolume(float audioVolume, PlayType playType)
         {
-            if (bgAS != null)
+            if (audioVolume>1)
             {
-                bgAS.Stop();
+                volumn = 1;
+            }
+            else if (audioVolume <0)
+            {
+                volumn = 0;
+            }
+
+            switch (playType)
+            {
+                case PlayType.Sound:
+                    soundAS.volume = volumn;
+                    break;
+                case PlayType.BgMusic:
+                    bgAS.volume = volumn;
+                    break;
+                case PlayType.All:
+                    soundAS.volume = volumn;
+                    bgAS.volume = volumn;
+                    break;
+                default:
+                    break;
             }
         }
 
-        IEnumerator WaitForPlaying(AudioSource aS, AudioClip ac)
-        {
-            yield return new WaitUntil(() => isPlayOver(aS));
-            aS.clip = ac;
-            aS.Play();
-        }
-
-        //��Ч����Ƿ񲥷���
-        bool isPlayOver(AudioSource aS)
-        {
-            return !aS.isPlaying;
-        }
     }
 }
 

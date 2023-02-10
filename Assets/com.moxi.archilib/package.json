@@ -1,9 +1,9 @@
 {
     "name": "com.moxi.archilib",
-    "version": "0.0.3",
-    "description": "自建库/程序基础框架",
+    "version": "0.0.4",
+    "description": "程序基础模块库",
     "displayName": "archilib",
-    "unity": "2019.4",
+    "unity": "2021.3.0f1c1",
     "author": {
       "name": "moxi",
       "email": "303936532@qq.com",
